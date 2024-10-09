@@ -4,6 +4,7 @@ import 'ui/explore.dart';
 import 'ui/search.dart';
 import 'ui/favorite.dart';
 import 'ui/profile.dart';
+import 'package:perpustakaan/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,10 +40,10 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const Explore(), // Layar Explore
-    const Search(), // Layar Search
-    const Favorite(), // Layar Favorite
-    const Profile(), // Layar Profile
+    const Explore(),
+    const Search(),
+    const Favorite(),
+    const Profile(),
   ];
 
   void _onItemTapped(int index) {
@@ -62,21 +63,21 @@ class _HomePageState extends State<HomePage> {
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search), // Ikon Pencarian
+            icon: Icon(Icons.search),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite), // Ikon Favorit
+            icon: Icon(Icons.favorite),
             label: 'Favorite',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person), // Ikon Profil
+            icon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: textColor,
+        unselectedItemColor: iconPertama,
         onTap: _onItemTapped,
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perpustakaan/themes.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -7,7 +8,14 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: backgroundColor,
       ),
       body: const Center(
         child: Column(

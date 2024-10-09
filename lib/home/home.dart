@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:perpustakaan/themes.dart';
 import '../ui/explore.dart';
 import '../ui/search.dart';
 import '../ui/favorite.dart';
+import 'package:perpustakaan/themes.dart';
 import '../ui/profile.dart';
 
 class Home extends StatefulWidget {
@@ -50,8 +52,8 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: textColor,
+        unselectedItemColor: iconPertama,
         onTap: _onItemTapped,
       ),
     );

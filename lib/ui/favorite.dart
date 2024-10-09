@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/models_buku.dart';
 import '../database/database_helper.dart';
+import 'package:perpustakaan/themes.dart';
 import 'detail_buku.dart';
 
 class Favorite extends StatelessWidget {
@@ -10,7 +11,14 @@ class Favorite extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorite Books'),
+        title: Text(
+          'Favorite Books',
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: backgroundColor,
       ),
       body: FutureBuilder<List<Book>>(
         future: DatabaseHelper()

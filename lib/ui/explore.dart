@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../database/database_helper.dart';
+import 'package:perpustakaan/themes.dart';
 import '../models/models_buku.dart';
 import 'detail_buku.dart';
 
@@ -32,12 +33,9 @@ class _ExploreState extends State<Explore> {
   }
 
   void _editBook(Book book) async {
-    TextEditingController titleController =
-    TextEditingController(text: book.title);
-    TextEditingController authorController =
-    TextEditingController(text: book.author);
-    TextEditingController descriptionController =
-    TextEditingController(text: book.description);
+    TextEditingController authorController = TextEditingController(text: book.author);
+    TextEditingController titleController = TextEditingController(text: book.title);
+    TextEditingController descriptionController = TextEditingController(text: book.description);
 
     await showDialog(
       context: context,
@@ -48,12 +46,12 @@ class _ExploreState extends State<Explore> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-              ),
-              TextField(
                 controller: authorController,
                 decoration: const InputDecoration(labelText: 'Author'),
+              ),
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
               ),
               TextField(
                 controller: descriptionController,
@@ -72,8 +70,8 @@ class _ExploreState extends State<Explore> {
               onPressed: () async {
                 Book updatedBook = Book(
                   id: book.id,
-                  title: titleController.text,
                   author: authorController.text,
+                  title: titleController.text,
                   description: descriptionController.text,
                   pdfPath: book.pdfPath,
                   isFavorite: book.isFavorite,
@@ -94,7 +92,14 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Explore Books'),
+        title: Text(
+            'Explore Books',
+            style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: backgroundColor,
       ),
       body: FutureBuilder<List<Book>>(
         future: _bookList,
@@ -102,37 +107,23 @@ class _ExploreState extends State<Explore> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data!.isEmpty) {
+          if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No books available.'));
           }
 
-          return ListView.builder(
+          return GridView.builder(
+            padding: const EdgeInsets.all(8.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.75,
+            ),
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final book = snapshot.data![index];
 
-              return ListTile(
-                title: Text(book.title),
-                subtitle: Text(book.author),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        _editBook(book);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        _deleteBook(book.id!);
-                      },
-                    ),
-                  ],
-                ),
+              return GestureDetector(
                 onTap: () {
                   // Navigasi ke layar detail ketika buku diklik
                   Navigator.push(
@@ -142,6 +133,80 @@ class _ExploreState extends State<Explore> {
                     ),
                   );
                 },
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Gambar PDF dengan ukuran yang lebih besar
+                      Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            topRight: Radius.circular(10.0),
+                          ),
+                          image: const DecorationImage(
+                            image: AssetImage('assets/pdf_icon.jpg'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Nama author dengan teks tebal
+                            Text(
+                              book.title,
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: textColor,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              // Membatasi baris teks nama author
+                            ),
+                            // Judul buku dengan teks biasa dan pembatasan panjang teks
+                            Text(
+                              book.author,
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: iconPertama,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,  // Membatasi maksimal 2 baris
+                            ),
+                            const SizedBox(height: 3),
+                            // Ikon edit dan hapus
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    _editBook(book);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    _deleteBook(book.id!);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
           );
@@ -158,10 +223,9 @@ class _ExploreState extends State<Explore> {
             String? path = result.files.single.path;
 
             if (path != null) {
-              TextEditingController titleController = TextEditingController();
               TextEditingController authorController = TextEditingController();
-              TextEditingController descriptionController =
-              TextEditingController();
+              TextEditingController titleController = TextEditingController();
+              TextEditingController descriptionController = TextEditingController();
 
               await showDialog(
                 context: context,
@@ -172,18 +236,16 @@ class _ExploreState extends State<Explore> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TextField(
+                          controller: authorController,
+                          decoration: const InputDecoration(labelText: 'Author'),
+                        ),
+                        TextField(
                           controller: titleController,
                           decoration: const InputDecoration(labelText: 'Title'),
                         ),
                         TextField(
-                          controller: authorController,
-                          decoration:
-                          const InputDecoration(labelText: 'Author'),
-                        ),
-                        TextField(
                           controller: descriptionController,
-                          decoration:
-                          const InputDecoration(labelText: 'Description'),
+                          decoration: const InputDecoration(labelText: 'Description'),
                         ),
                       ],
                     ),
@@ -197,8 +259,8 @@ class _ExploreState extends State<Explore> {
                       ElevatedButton(
                         onPressed: () async {
                           Book newBook = Book(
-                            title: titleController.text,
                             author: authorController.text,
+                            title: titleController.text,
                             description: descriptionController.text,
                             pdfPath: path,
                             isFavorite: false,

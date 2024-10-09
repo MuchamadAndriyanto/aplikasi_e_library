@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/models_buku.dart';
 import '../database/database_helper.dart';
+import 'package:perpustakaan/themes.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -43,7 +44,14 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Books'),
+        title: Text(
+          'Search Books',
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: backgroundColor,
       ),
       body: Column(
         children: [
