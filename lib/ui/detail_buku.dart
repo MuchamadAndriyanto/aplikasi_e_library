@@ -43,11 +43,18 @@ class _DetailBukuState extends State<DetailBuku> {
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          color: iconPertama,
+        ),
         actions: [
           IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? iconKedua : iconPertama,
+              color: isFavorite ? textColor: iconPertama,
             ),
             onPressed: _toggleFavorite, // Fungsi toggleFavorite
           ),

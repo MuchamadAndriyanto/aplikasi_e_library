@@ -27,13 +27,14 @@ class Profile extends StatelessWidget {
               backgroundImage: AssetImage(
                   'assets/icon_pdf.png'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             Text(
               'Username',
               style: TextStyle(fontSize: 25,
                   fontWeight: FontWeight.bold,
                   color: textColor),
             ),
+            SizedBox(height: 3),
             Text(
               'mandriyan@example.com',
               style: TextStyle(fontSize: 15,
