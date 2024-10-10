@@ -18,18 +18,29 @@ class Favorite extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: backgroundColor,
       ),
       body: FutureBuilder<List<Book>>(
-        future: DatabaseHelper()
-            .getAllFavoriteBooks(), // Mengambil daftar buku favorit dari database
+        future: DatabaseHelper().getAllFavoriteBooks(), // Mengambil daftar buku favorit dari database
         builder: (context, snapshot) {
+          // Menangani status koneksi
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No favorite books found.'));
+          }
+          // Menangani kondisi tidak ada data
+          else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                'No favorite books found.',
+                style: TextStyle(
+                  color: iconPertama,
+                ),
+              ),
+            );
           } else {
             final favoriteBooks = snapshot.data!;
+            // Menampilkan daftar buku favorit
             return ListView.builder(
               itemCount: favoriteBooks.length,
               itemBuilder: (context, index) {
@@ -42,8 +53,7 @@ class Favorite extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => DetailBuku(
-                            book: book), // Menggunakan BookDetailScreen
+                        builder: (context) => DetailBuku(book: book),
                       ),
                     );
                   },

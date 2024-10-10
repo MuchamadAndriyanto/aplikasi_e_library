@@ -12,31 +12,31 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<Book> _books = [];
-  List<Book> _filteredBooks = [];
-  String _searchQuery = ''; // Use this field to hold the search query
+  List<Book> _filteredBooks = []; // Menyimpan buku yang sudah difilter berdasarkan pencarian
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _loadBooks(); // Load all books on initialization
+    _loadBooks();
   }
 
-  // Load all books from the database
+  // Fungsi untuk mengambil semua buku dari database
   void _loadBooks() async {
     _books = await DatabaseHelper().getAllBooks();
     setState(() {
-      _filteredBooks = _books; // Initialize the filtered list with all books
+      _filteredBooks = _books;
     });
   }
 
-  // Filter books based on the search query
+  // Fungsi untuk memfilter buku berdasarkan pencarian
   void _filterBooks(String query) {
     setState(() {
-      _searchQuery = query; // Update the search query
+      _searchQuery = query;
       _filteredBooks = _books.where((book) {
         return book.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             book.author.toLowerCase().contains(_searchQuery.toLowerCase());
-      }).toList(); // Filter books based on the updated search query
+      }).toList();
     });
   }
 
@@ -51,6 +51,7 @@ class _SearchState extends State<Search> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: backgroundColor,
       ),
       body: Column(
@@ -58,10 +59,24 @@ class _SearchState extends State<Search> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              onChanged: _filterBooks, // Call filterBooks when the text changes
-              decoration: const InputDecoration(
+              onChanged: _filterBooks, // Fungsi pemfilteran
+              decoration: InputDecoration(
                 hintText: 'Search by title or author',
-                border: OutlineInputBorder(),
+                hintStyle: TextStyle(color: iconPertama),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(
+                    color: iconPertama,
+                    width: 1.0,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(
+                    color: textColor,
+                    width: 2.0,
+                  ),
+                ),
               ),
             ),
           ),
@@ -74,7 +89,6 @@ class _SearchState extends State<Search> {
                   title: Text(book.title),
                   subtitle: Text(book.author),
                   onTap: () {
-                    // Navigate to the book details screen if needed
                   },
                 );
               },

@@ -6,14 +6,13 @@ class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   static Database? _database;
 
-  // Singleton pattern
   factory DatabaseHelper() {
     return _instance;
   }
 
   DatabaseHelper._internal();
 
-  // Mengambil instance database
+  // mengambil database instance
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDb();
@@ -41,7 +40,7 @@ class DatabaseHelper {
     );
   }
 
-  // Menyisipkan buku baru
+  // Menambahkan buku baru
   Future<int> insertBook(Book book) async {
     Database db = await database;
     return await db.insert('books', book.toMap());
@@ -91,7 +90,7 @@ class DatabaseHelper {
       'books',
       book.toMap(),
       where: 'id = ?',
-      whereArgs: [book.id], // Asumsikan Anda memiliki properti id untuk buku
+      whereArgs: [book.id], // id untuk buku
     );
   }
 

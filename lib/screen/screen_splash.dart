@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../home/home.dart';
+import 'package:perpustakaan/themes.dart';
 
-class ScreenSplash extends StatelessWidget {
+class ScreenSplash extends StatefulWidget {
   const ScreenSplash({super.key});
 
+  @override
+  _ScreenSplashState createState() => _ScreenSplashState();
+}
+
+class _ScreenSplashState extends State<ScreenSplash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,60 +18,54 @@ class ScreenSplash extends StatelessWidget {
         options: CarouselOptions(
           height: MediaQuery.of(context).size.height,
           autoPlay: true,
-          viewportFraction: 1.0,
+          autoPlayInterval: const Duration(seconds: 3), // Interval auto play
+          enlargeCenterPage: true,
         ),
         items: [
-          SplashPage(
-            title: 'Welcome Screen',
-            description: 'Welcome to the E-Library App!',
-          ),
-          SplashPage(
-            title: 'Explore Books',
-            description: 'Discover thousands of books in our library!',
-          ),
-          SplashPage(
-            title: 'Read Anywhere',
-            description: 'Read books online or offline!',
-          ),
+          splashPage('Welcome to E-Library App'),
+          splashPage('Have Fun!'),
+          splashPage('Tap to Get Started!'),
         ],
       ),
     );
   }
-}
 
-class SplashPage extends StatelessWidget {
-  final String title;
-  final String description;
-
-  const SplashPage({super.key, required this.title, required this.description});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget splashPage(String text) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      decoration: const BoxDecoration(color: Colors.black),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // Ubah warna teks agar kontras dengan background hitam
+      color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            description,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.white, // Warna teks putih agar terlihat jelas
-            ),
-            textAlign: TextAlign.center, // Tambahkan pengaturan textAlign untuk merapikan teks
-          ),
-        ],
+            const SizedBox(height: 20),
+            // Jika text adalah 'Tap to Get Started!'
+            if (text == 'Tap to Get Started!')
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                  );
+                },
+                child: Text(
+                  'Get Started',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: iconPertama,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

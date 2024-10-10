@@ -23,9 +23,8 @@ class _DetailBukuState extends State<DetailBuku> {
     isFavorite = widget.book.isFavorite;
   }
 
-  // Fungsi untuk toggle favorit
   void _toggleFavorite() async {
-    await DatabaseHelper().toggleFavorite(widget.book.id!); // Memanggil fungsi toggleFavorite di DatabaseHelper
+    await DatabaseHelper().toggleFavorite(widget.book.id!);
     setState(() {
       isFavorite = !isFavorite;
     });
@@ -37,8 +36,8 @@ class _DetailBukuState extends State<DetailBuku> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         title: Text(
-            'Detail Buku',
-            style: TextStyle(
+          'Detail Buku',
+          style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.bold,
           ),
@@ -64,17 +63,12 @@ class _DetailBukuState extends State<DetailBuku> {
               // Menampilkan gambar buku
               Center(
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10.0),
-                    topRight: Radius.circular(10.0),
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                  ),
+                  borderRadius: BorderRadius.circular(10.0),
                   child: Image.asset(
-                    'assets/pdf_icon.jpg', // Gambar buku (pastikan path benar)
+                    'assets/icon_pdf.png',
                     height: 250,
-                    width: 200, // Menambahkan lebar gambar untuk menjaga proporsi
-                    fit: BoxFit.cover, // Menyesuaikan gambar agar memenuhi kotak
+                    width: 200,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -83,30 +77,39 @@ class _DetailBukuState extends State<DetailBuku> {
               Text(
                 widget.book.title,
                 style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color : textColor,),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
+              const SizedBox(height: 7),
               Text(
                 widget.book.author,
                 style: TextStyle(
-                    fontSize: 17,
-                    color: iconColor),
+                  fontSize: 18,
+                  color: iconColor,
+                ),
               ),
               const SizedBox(height: 40),
-              // Heading "Deskripsi"
-              const Text(
+              // Menampilkan deskripsi
+              Text(
                 'Deskripsi',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
-              const SizedBox(height: 2),
-              // Menampilkan deskripsi buku
+              const SizedBox(height: 5),
               Text(
                 widget.book.description,
-                style: const TextStyle(fontSize: 17),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: iconPertama,
+                ),
               ),
-              const SizedBox(height: 35),
-              // Tombol Read Book di bagian tengah
+              const SizedBox(height: 50),
+              // Tombol Read Book
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -118,7 +121,21 @@ class _DetailBukuState extends State<DetailBuku> {
                       ),
                     );
                   },
-                  child: const Text('Read Book'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: backgroundColor,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12.0,
+                      horizontal: 20.0,
+                    ),
+                  ),
+                  child: Text(
+                    'Read Book',
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],

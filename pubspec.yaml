@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/pdf_icon.jpg
     - assets/60360.jpg
+    - assets/icon_pdf.png
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

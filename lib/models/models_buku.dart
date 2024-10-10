@@ -4,7 +4,7 @@ class Book {
   String author;
   String description;
   String pdfPath;
-  bool isFavorite; // Ubah tipe menjadi bool
+  bool isFavorite;
 
   Book({
     this.id,
@@ -23,7 +23,7 @@ class Book {
       author: map['author'],
       description: map['description'],
       pdfPath: map['pdfPath'],
-      isFavorite: map['isFavorite'] == 1, // Konversi int ke bool
+      isFavorite: map['isFavorite'] == 1,
     );
   }
 

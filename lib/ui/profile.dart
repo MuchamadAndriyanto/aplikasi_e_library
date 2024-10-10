@@ -15,27 +15,30 @@ class Profile extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: backgroundColor,
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             CircleAvatar(
-              radius: 50,
+              radius: 100,
               backgroundImage: AssetImage(
-                  'assets/profile.jpg'), // Ganti dengan gambar profil Anda
+                  'assets/icon_pdf.png'),
             ),
             SizedBox(height: 20),
             Text(
-              'User Name',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              'Username',
+              style: TextStyle(fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: textColor),
             ),
             Text(
-              'mandri@example.com',
-              style: TextStyle(fontSize: 18),
+              'mandriyan@example.com',
+              style: TextStyle(fontSize: 15,
+              color: iconPertama),
             ),
-            // Tambahkan lebih banyak informasi profil di sini
           ],
         ),
       ),

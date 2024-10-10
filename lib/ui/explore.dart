@@ -13,6 +13,7 @@ class Explore extends StatefulWidget {
 }
 
 class _ExploreState extends State<Explore> {
+  // Menampung daftar buku yang akan diambil dari database
   late Future<List<Book>> _bookList;
 
   @override
@@ -21,22 +22,26 @@ class _ExploreState extends State<Explore> {
     _loadBooks();
   }
 
+  // Fungsi untuk memuat semua buku dari database
   void _loadBooks() {
     setState(() {
       _bookList = DatabaseHelper().getAllBooks();
     });
   }
 
+  // Fungsi untuk menghapus buku
   void _deleteBook(int id) async {
     await DatabaseHelper().deleteBook(id);
     _loadBooks();
   }
 
+  // Fungsi untuk mengedit informasi buku
   void _editBook(Book book) async {
-    TextEditingController authorController = TextEditingController(text: book.author);
     TextEditingController titleController = TextEditingController(text: book.title);
+    TextEditingController authorController = TextEditingController(text: book.author);
     TextEditingController descriptionController = TextEditingController(text: book.description);
 
+    // Dialog untuk mengedit buku
     await showDialog(
       context: context,
       builder: (context) {
@@ -46,12 +51,12 @@ class _ExploreState extends State<Explore> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: authorController,
-                decoration: const InputDecoration(labelText: 'Author'),
-              ),
-              TextField(
                 controller: titleController,
                 decoration: const InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                controller: authorController,
+                decoration: const InputDecoration(labelText: 'Author'),
               ),
               TextField(
                 controller: descriptionController,
@@ -70,16 +75,23 @@ class _ExploreState extends State<Explore> {
               onPressed: () async {
                 Book updatedBook = Book(
                   id: book.id,
-                  author: authorController.text,
                   title: titleController.text,
+                  author: authorController.text,
                   description: descriptionController.text,
                   pdfPath: book.pdfPath,
                   isFavorite: book.isFavorite,
                 );
-                await DatabaseHelper().updateBook(updatedBook);
+                await DatabaseHelper().updateBook(updatedBook); // Memperbarui buku di database
                 Navigator.of(context).pop();
                 _loadBooks();
               },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0), // Menambahkan radius
+                ),
+                primary: backgroundColor,
+                onPrimary: textColor,
+              ),
               child: const Text('Save'),
             ),
           ],
@@ -93,12 +105,13 @@ class _ExploreState extends State<Explore> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Explore Books',
-            style: TextStyle(
+          'Explore Books',
+          style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: backgroundColor,
       ),
       body: FutureBuilder<List<Book>>(
@@ -108,9 +121,15 @@ class _ExploreState extends State<Explore> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No books available.'));
+            return Center(
+              child: Text(
+                'No books available.',
+                style: TextStyle(color: iconPertama),
+              ),
+            );
           }
 
+          // Tampilkan dalam bentuk grid
           return GridView.builder(
             padding: const EdgeInsets.all(8.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -125,7 +144,6 @@ class _ExploreState extends State<Explore> {
 
               return GestureDetector(
                 onTap: () {
-                  // Navigasi ke layar detail ketika buku diklik
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -141,16 +159,16 @@ class _ExploreState extends State<Explore> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Gambar PDF dengan ukuran yang lebih besar
+                      // Gambar placeholder untuk buku dalam grid
                       Container(
-                        height: 100,
+                        height: 125,
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10.0),
                             topRight: Radius.circular(10.0),
                           ),
                           image: const DecorationImage(
-                            image: AssetImage('assets/pdf_icon.jpg'),
+                            image: AssetImage('assets/icon_pdf.png'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -160,30 +178,26 @@ class _ExploreState extends State<Explore> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Nama author dengan teks tebal
                             Text(
                               book.title,
                               style: TextStyle(
-                                fontSize: 30,
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: textColor,
                               ),
-                              overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              // Membatasi baris teks nama author
                             ),
-                            // Judul buku dengan teks biasa dan pembatasan panjang teks
+                            const SizedBox(height: 7),
                             Text(
                               book.author,
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 13,
                                 color: iconPertama,
                               ),
                               overflow: TextOverflow.ellipsis,
-                              maxLines: 2,  // Membatasi maksimal 2 baris
+                              maxLines: 2,
                             ),
-                            const SizedBox(height: 3),
-                            // Ikon edit dan hapus
+                            const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -216,69 +230,121 @@ class _ExploreState extends State<Explore> {
         onPressed: () async {
           FilePickerResult? result = await FilePicker.platform.pickFiles(
             type: FileType.custom,
-            allowedExtensions: ['pdf'],
+            allowedExtensions: ['pdf'], // Hanya file PDF yang diperbolehkan
           );
 
-          if (result != null) {
+          if (result != null && result.files.isNotEmpty) {
             String? path = result.files.single.path;
 
-            if (path != null) {
-              TextEditingController authorController = TextEditingController();
+            // Pastikan path tidak null dan memiliki ekstensi .pdf
+            if (path != null && path.toLowerCase().endsWith('.pdf')) {
               TextEditingController titleController = TextEditingController();
+              TextEditingController authorController = TextEditingController();
               TextEditingController descriptionController = TextEditingController();
+              bool isValid = true; // Flag untuk mengecek validitas input
 
+              // Dialog untuk menambahkan buku
               await showDialog(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Upload Book'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          controller: authorController,
-                          decoration: const InputDecoration(labelText: 'Author'),
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return AlertDialog(
+                        title: Text(
+                          'Upload Book',
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        TextField(
-                          controller: titleController,
-                          decoration: const InputDecoration(labelText: 'Title'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: titleController,
+                              decoration: InputDecoration(
+                                labelText: 'Title',
+                                errorText: titleController.text.isEmpty && !isValid
+                                    ? 'Title is required'
+                                    : null,
+                              ),
+                            ),
+                            TextField(
+                              controller: authorController,
+                              decoration: InputDecoration(
+                                labelText: 'Author',
+                                errorText: authorController.text.isEmpty && !isValid
+                                    ? 'Author is required'
+                                    : null,
+                              ),
+                            ),
+                            TextField(
+                              controller: descriptionController,
+                              decoration: InputDecoration(
+                                labelText: 'Description',
+                                errorText: descriptionController.text.isEmpty && !isValid
+                                    ? 'Description is required'
+                                    : null,
+                              ),
+                            ),
+                          ],
                         ),
-                        TextField(
-                          controller: descriptionController,
-                          decoration: const InputDecoration(labelText: 'Description'),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          Book newBook = Book(
-                            author: authorController.text,
-                            title: titleController.text,
-                            description: descriptionController.text,
-                            pdfPath: path,
-                            isFavorite: false,
-                          );
-                          await DatabaseHelper().insertBook(newBook);
-                          Navigator.of(context).pop();
-                          _loadBooks();
-                        },
-                        child: const Text('Save'),
-                      ),
-                    ],
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                            style: TextButton.styleFrom(
+                              primary: textColor,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              // Validasi input
+                              setState(() {
+                                isValid = authorController.text.isNotEmpty &&
+                                    titleController.text.isNotEmpty &&
+                                    descriptionController.text.isNotEmpty;
+                              });
+
+                              if (isValid) {
+                                Book newBook = Book(
+                                  author: authorController.text,
+                                  title: titleController.text,
+                                  description: descriptionController.text,
+                                  pdfPath: path,
+                                  isFavorite: false,
+                                );
+                                await DatabaseHelper().insertBook(newBook);
+                                Navigator.of(context).pop();
+                                _loadBooks();
+                              }
+                            },
+                            child: const Text('Save'),
+                            style: ElevatedButton.styleFrom(
+                              primary: backgroundColor,
+                              onPrimary: textColor,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
+              );
+            } else {
+              // Menampilkan pesan error jika file bukan PDF
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Please select a valid PDF file.'),
+                  backgroundColor: textColor,
+                ),
               );
             }
           }
         },
-        tooltip: 'Upload Book',
+        backgroundColor: textColor,
         child: const Icon(Icons.add),
       ),
     );

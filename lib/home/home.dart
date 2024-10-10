@@ -3,8 +3,8 @@ import 'package:perpustakaan/themes.dart';
 import '../ui/explore.dart';
 import '../ui/search.dart';
 import '../ui/favorite.dart';
-import 'package:perpustakaan/themes.dart';
 import '../ui/profile.dart';
+import 'package:perpustakaan/themes.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
